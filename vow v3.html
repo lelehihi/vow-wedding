@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOW 囍 · 婚礼直播平台</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ivory: #faf7f2; --cream: #f3ede3; --gold: #c9a96e;
+  --gold-light: #e8d5b0; --gold-dark: #a07840;
+  --charcoal: #2c2620; --muted: #8a7d72;
+  --red: #c0392b; --red-light: #e74c3c;
+  --green: #27ae60; --rose: #d4a5a0;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif; background: var(--ivory); color: var(--charcoal); min-height: 100vh; }
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 500;
+  background: rgba(250,247,242,0.97); backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(201,169,110,0.25);
+  height: 58px; padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-family:'Noto Serif SC',serif; font-size:20px; font-weight:600; color:var(--gold-dark); letter-spacing:4px; cursor:pointer; user-select:none; }
+.nav-links { display:flex; gap:2px; }
+.nav-btn { padding:6px 14px; font-size:13px; font-family:inherit; border:none; background:transparent; color:var(--muted); cursor:pointer; border-radius:3px; transition:all .2s; white-space:nowrap; }
+.nav-btn:hover { color:var(--gold-dark); background:rgba(201,169,110,.1); }
+.nav-btn.active { background:var(--charcoal); color:var(--ivory); }
+
+/* ── PAGES ── */
+.page { display:none; }
+.page.active { display:block; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── BUTTONS ── */
+.btn-primary { background:var(--gold-dark); color:white; padding:11px 26px; border:none; font-size:13px; font-family:inherit; cursor:pointer; border-radius:2px; transition:all .3s; }
+.btn-primary:hover { background:var(--charcoal); transform:translateY(-1px); box-shadow:0 6px 18px rgba(44,38,32,.2); }
+.btn-outline { background:transparent; color:var(--charcoal); padding:11px 26px; border:1px solid var(--charcoal); font-size:13px; font-family:inherit; cursor:pointer; border-radius:2px; transition:all .3s; }
+.btn-outline:hover { border-color:var(--gold-dark); color:var(--gold-dark); }
+.btn-red { background:var(--red); color:white; padding:11px 26px; border:none; font-size:13px; font-family:inherit; cursor:pointer; border-radius:2px; transition:all .3s; }
+.btn-red:hover { background:#a93226; }
+.btn-green { background:var(--green); color:white; padding:11px 26px; border:none; font-size:13px; font-family:inherit; cursor:pointer; border-radius:2px; transition:all .3s; }
+.btn-green:hover { background:#1e8449; }
+
+/* ── GOLD DIVIDER ── */
+.gold-divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:0 28px; }
+
+/* ════════════════════════════════════
+   HOME PAGE
+════════════════════════════════════ */
+.hero { max-width:1060px; margin:0 auto; padding:52px 28px 44px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+.hero-tag { font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.hero-tag::before { content:''; width:24px; height:1px; background:var(--gold); display:block; }
+.hero-title { font-family:'Noto Serif SC',serif; font-size:44px; font-weight:300; line-height:1.3; margin-bottom:20px; }
+.hero-title em { font-style:italic; color:var(--gold-dark); }
+.hero-sub { font-size:14px; line-height:1.95; color:var(--muted); margin-bottom:32px; font-weight:300; }
+.hero-btns { display:flex; gap:12px; flex-wrap:wrap; }
+.hero-right { display:flex; justify-content:center; position:relative; }
+.mock-phone { width:220px; height:440px; background:var(--charcoal); border-radius:36px; box-shadow:0 32px 64px rgba(44,38,32,.25),0 0 0 2px rgba(201,169,110,.3); overflow:hidden; animation:phoneFloat 5s ease-in-out infinite; position:relative; }
+@keyframes phoneFloat { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-12px) rotate(-2deg)} }
+.phone-stream-area { height:360px; background:linear-gradient(180deg,#1a1410,#2c2620); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.phone-glow { position:absolute; inset:0; background:radial-gradient(ellipse at center,rgba(201,169,110,.12),transparent 70%); animation:glowPulse 3s ease-in-out infinite; }
+@keyframes glowPulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+.phone-center-icon { font-size:44px; opacity:.45; position:relative; z-index:1; }
+.phone-live-badge { position:absolute; top:10px; left:10px; background:var(--red); color:white; font-size:9px; padding:3px 8px; border-radius:2px; display:flex; align-items:center; gap:4px; z-index:2; }
+.blink-dot { width:5px; height:5px; background:white; border-radius:50%; animation:blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.phone-viewer { position:absolute; top:10px; right:10px; font-size:9px; color:rgba(255,255,255,.6); z-index:2; }
+.phone-couple-info { position:absolute; bottom:12px; left:12px; z-index:2; }
+.phone-couple-name { font-family:'Noto Serif SC',serif; font-size:15px; color:white; font-style:italic; }
+.phone-couple-sub { font-size:8px; letter-spacing:1px; color:var(--gold-light); margin-top:2px; }
+.phone-floating { position:absolute; right:10px; bottom:40px; z-index:2; display:flex; flex-direction:column; gap:4px; }
+.float-emoji { font-size:18px; animation:emojiRise 3s ease-out infinite; opacity:0; }
+.float-emoji:nth-child(2){animation-delay:1s} .float-emoji:nth-child(3){animation-delay:2s}
+@keyframes emojiRise { 0%{opacity:0;transform:translateY(0)} 20%{opacity:1} 100%{opacity:0;transform:translateY(-50px)} }
+.phone-bottom-bar { height:80px; background:var(--charcoal); padding:12px 14px; border-top:1px solid rgba(255,255,255,.05); }
+.phone-input-mock { background:rgba(255,255,255,.07); border-radius:16px; padding:7px 12px; font-size:9px; color:rgba(255,255,255,.35); }
+
+/* feature cards */
+.features-section { background:var(--cream); padding:56px 28px; }
+.section-header { text-align:center; max-width:600px; margin:0 auto 44px; }
+.section-tag-c { font-size:10px; letter-spacing:3px; color:var(--gold); margin-bottom:12px; }
+.section-title { font-family:'Noto Serif SC',serif; font-size:30px; font-weight:300; color:var(--charcoal); line-height:1.35; }
+.section-title em { font-style:italic; color:var(--gold-dark); }
+.features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; max-width:1060px; margin:0 auto; }
+.feature-card { background:var(--ivory); padding:32px 26px; transition:all .35s; position:relative; overflow:hidden; }
+.feature-card::after { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--gold); transition:width .35s; }
+.feature-card:hover { background:white; transform:translateY(-3px); box-shadow:0 8px 24px rgba(44,38,32,.08); }
+.feature-card:hover::after { width:100%; }
+.feature-num { font-family:'Noto Serif SC',serif; font-size:48px; font-weight:300; color:var(--gold-light); line-height:1; margin-bottom:10px; }
+.feature-title { font-family:'Noto Serif SC',serif; font-size:17px; color:var(--charcoal); margin-bottom:9px; }
+.feature-desc { font-size:12px; line-height:1.85; color:var(--muted); font-weight:300; }
+.feature-badge { display:inline-block; margin-top:12px; font-size:9px; letter-spacing:2px; color:var(--gold-dark); border:1px solid var(--gold-light); padding:3px 8px; }
+
+/* ════════════════════════════════════
+   LIVE STREAM PAGE  (with themes)
+════════════════════════════════════ */
+.stream-page { display:grid; grid-template-columns:1fr 330px; gap:20px; padding:24px 28px; max-width:1240px; margin:0 auto; }
+.stream-main { display:flex; flex-direction:column; gap:14px; }
+
+/* VIDEO BOX — theme layers */
+.stream-video-box {
+  border-radius:6px; aspect-ratio:16/9; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .5s;
+}
+/* Default theme */
+.theme-default .stream-video-box { background:var(--charcoal); }
+/* 中式红 */
+.theme-chinese { --theme-bg:#8b1a1a; --theme-accent:#f5c518; }
+.theme-chinese .stream-video-box { background:radial-gradient(ellipse at 30% 30%,#b22222,#6b0000); }
+.theme-chinese .stream-video-box::before { content:'🏮🧧🏮'; position:absolute; top:10px; left:0; right:0; text-align:center; font-size:28px; z-index:1; letter-spacing:16px; opacity:.7; }
+.theme-chinese .stream-video-box::after { content:'囍'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-10deg); font-size:180px; color:rgba(255,215,0,.08); font-family:'Noto Serif SC',serif; z-index:0; }
+/* 粉色浪漫 */
+.theme-pink .stream-video-box { background:radial-gradient(ellipse at 40% 40%,#e8b4b8,#c47a7e); }
+.theme-pink .stream-video-box::before { content:'🌸💗🌸'; position:absolute; top:8px; left:0; right:0; text-align:center; font-size:24px; z-index:1; letter-spacing:20px; opacity:.8; }
+.theme-pink .stream-video-box::after { content:'♡'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:200px; color:rgba(255,255,255,.1); z-index:0; }
+/* 金色典雅 */
+.theme-gold .stream-video-box { background:linear-gradient(135deg,#2c2620,#4a3728,#2c2620); }
+.theme-gold .stream-video-box::before { content:'✦'; position:absolute; top:12px; right:16px; font-size:28px; color:rgba(201,169,110,.5); z-index:1; }
+.theme-gold .stream-video-box::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(201,169,110,.03) 30px,rgba(201,169,110,.03) 31px); z-index:0; }
+/* 白色简约 */
+.theme-white .stream-video-box { background:linear-gradient(135deg,#f0ebe4,#e8e0d8); }
+.theme-white .stream-video-box::before { content:'💒'; position:absolute; top:14px; left:50%; transform:translateX(-50%); font-size:32px; z-index:1; opacity:.6; }
+
+.stream-waiting { text-align:center; position:relative; z-index:2; padding:20px; }
+.stream-waiting-icon { font-size:52px; margin-bottom:10px; opacity:.5; }
+.stream-waiting-text { font-family:'Noto Serif SC',serif; font-size:18px; font-style:italic; color:rgba(255,255,255,.6); margin-bottom:5px; }
+.theme-white .stream-waiting-text { color:rgba(44,38,32,.5); }
+.theme-pink .stream-waiting-text { color:rgba(255,255,255,.8); }
+.stream-waiting-sub { font-size:11px; letter-spacing:1.5px; color:rgba(255,255,255,.25); }
+.theme-white .stream-waiting-sub { color:rgba(44,38,32,.3); }
+
+.stream-bar { position:absolute; bottom:0; left:0; right:0; padding:14px 18px; background:linear-gradient(transparent,rgba(0,0,0,.65)); display:flex; align-items:center; gap:8px; z-index:3; }
+.ctrl-btn { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:white; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px; transition:all .25s; flex-shrink:0; }
+.ctrl-btn:hover { background:rgba(255,255,255,.25); }
+.go-live-btn { margin-left:auto; background:var(--red) !important; border-color:var(--red) !important; width:auto !important; border-radius:3px !important; padding:0 16px; font-size:11px; letter-spacing:1.5px; font-family:inherit; height:34px; }
+.go-live-btn:hover { background:#a93226 !important; transform:none !important; }
+.live-indicator { display:flex; align-items:center; gap:5px; font-size:11px; color:rgba(255,255,255,.7); }
+.live-indicator .dot { width:7px; height:7px; border-radius:50%; background:var(--red); animation:blink 1.2s infinite; }
+
+/* THEME PICKER */
+.theme-picker { background:var(--cream); border-radius:4px; padding:16px 20px; }
+.theme-picker-title { font-size:12px; letter-spacing:1.5px; color:var(--muted); margin-bottom:12px; text-transform:uppercase; }
+.theme-options { display:flex; gap:8px; flex-wrap:wrap; }
+.theme-opt {
+  padding:8px 14px; border:1px solid rgba(201,169,110,.3); background:white;
+  font-size:12px; cursor:pointer; border-radius:3px; transition:all .25s;
+  display:flex; align-items:center; gap:6px;
+}
+.theme-opt:hover { border-color:var(--gold); }
+.theme-opt.selected { background:var(--charcoal); color:var(--ivory); border-color:var(--charcoal); }
+.theme-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+
+/* rehearsal box */
+.rehearsal-box { background:linear-gradient(135deg,var(--charcoal),#3a2e28); border-radius:4px; padding:18px 22px; border:1px solid rgba(201,169,110,.2); display:flex; justify-content:space-between; align-items:center; gap:14px; }
+.rehearsal-title { font-family:'Noto Serif SC',serif; font-size:15px; color:var(--ivory); margin-bottom:4px; }
+.rehearsal-desc { font-size:12px; color:rgba(250,247,242,.5); line-height:1.6; font-weight:300; max-width:480px; }
+.rehearsal-status { display:flex; align-items:center; gap:6px; font-size:11px; color:#68d391; white-space:nowrap; font-weight:500; }
+.status-dot-green { width:8px; height:8px; border-radius:50%; background:#68d391; flex-shrink:0; }
+
+/* SIDEBAR */
+.stream-sidebar { display:flex; flex-direction:column; gap:14px; }
+.sidebar-card { background:var(--cream); border-radius:4px; padding:16px 18px; }
+.sidebar-card-title { font-family:'Noto Serif SC',serif; font-size:15px; color:var(--charcoal); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(201,169,110,.2); }
+
+.chat-msgs { max-height:160px; overflow-y:auto; display:flex; flex-direction:column; gap:7px; margin-bottom:10px; scrollbar-width:thin; scrollbar-color:var(--gold-light) transparent; }
+.chat-msg-item { font-size:12px; line-height:1.55; color:var(--charcoal); }
+.chat-msg-item strong { color:var(--gold-dark); font-weight:500; }
+.chat-msg-item.gift-msg strong { color:var(--red); }
+.chat-input-row { display:flex; gap:6px; }
+.chat-input { flex:1; background:white; border:1px solid rgba(201,169,110,.3); padding:7px 10px; font-size:12px; font-family:inherit; outline:none; color:var(--charcoal); border-radius:2px; transition:border-color .25s; }
+.chat-input:focus { border-color:var(--gold); }
+.chat-send { background:var(--gold-dark); color:white; border:none; padding:7px 12px; font-size:12px; cursor:pointer; border-radius:2px; font-family:inherit; transition:background .25s; }
+.chat-send:hover { background:var(--charcoal); }
+
+.reactions-grid { display:flex; flex-wrap:wrap; gap:6px; }
+.reaction-btn { background:white; border:1px solid rgba(201,169,110,.25); padding:6px 9px; font-size:17px; cursor:pointer; border-radius:2px; transition:all .2s; }
+.reaction-btn:hover { background:var(--gold-light); transform:scale(1.2); }
+
+.viewers-list { font-size:12px; color:var(--muted); line-height:2; }
+.viewers-more { margin-top:5px; font-size:11px; letter-spacing:1px; color:var(--gold-dark); font-weight:500; }
+
+/* floating reaction */
+.float-reaction { position:fixed; font-size:26px; pointer-events:none; z-index:9999; animation:floatUp 1.6s ease-out forwards; }
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-110px) scale(1.3)} }
+
+/* ════════════════════════════════════
+   GIFT / RED PACKET PAGE
+════════════════════════════════════ */
+.gift-page { max-width:900px; margin:0 auto; padding:44px 28px; }
+.page-title { font-family:'Noto Serif SC',serif; font-size:32px; font-weight:300; color:var(--charcoal); margin-bottom:8px; }
+.page-title em { font-style:italic; color:var(--red); }
+.page-sub { font-size:13px; color:var(--muted); margin-bottom:36px; line-height:1.8; font-weight:300; }
+
+/* preset packets */
+.packets-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:32px; }
+.packet-card {
+  background:linear-gradient(145deg,#c0392b,#922b21);
+  border-radius:12px; padding:20px 14px; text-align:center;
+  cursor:pointer; transition:all .3s; position:relative; overflow:hidden;
+  box-shadow:0 6px 20px rgba(192,57,43,.3);
+  border:2px solid transparent;
+}
+.packet-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.12),transparent 60%); pointer-events:none; }
+.packet-card:hover { transform:translateY(-4px) scale(1.02); box-shadow:0 12px 28px rgba(192,57,43,.4); }
+.packet-card.selected { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,169,110,.3); }
+.packet-emoji { font-size:28px; margin-bottom:6px; position:relative; z-index:1; }
+.packet-name { font-family:'Noto Serif SC',serif; font-size:14px; color:rgba(255,255,255,.95); margin-bottom:4px; position:relative; z-index:1; font-weight:400; }
+.packet-amount { font-size:20px; font-weight:600; color:#ffd700; position:relative; z-index:1; font-family:'Noto Serif SC',serif; }
+.packet-amount span { font-size:12px; font-weight:300; color:rgba(255,215,0,.7); }
+.packet-blessing { font-size:10px; color:rgba(255,255,255,.55); margin-top:3px; letter-spacing:.5px; position:relative; z-index:1; }
+
+/* custom amount */
+.custom-section { background:var(--cream); border-radius:6px; padding:26px 28px; margin-bottom:28px; }
+.custom-title { font-family:'Noto Serif SC',serif; font-size:18px; color:var(--charcoal); margin-bottom:16px; }
+.custom-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-label { font-size:11px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
+.form-input, .form-textarea {
+  background:white; border:1px solid rgba(201,169,110,.3); padding:10px 13px;
+  font-family:inherit; font-size:14px; color:var(--charcoal); outline:none;
+  transition:border-color .3s; border-radius:2px; -webkit-appearance:none;
+}
+.form-input:focus,.form-textarea:focus { border-color:var(--gold); }
+.form-input::placeholder,.form-textarea::placeholder { color:#c5b8ac; }
+.form-textarea { resize:vertical; min-height:80px; }
+.custom-full { grid-column:1/-1; }
+
+/* send gift summary */
+.gift-summary {
+  background:linear-gradient(135deg,#922b21,#6b0000);
+  border-radius:6px; padding:22px 26px; display:flex;
+  justify-content:space-between; align-items:center; gap:16px;
+  border:1px solid rgba(255,215,0,.2);
+}
+.gift-summary-left {}
+.gift-summary-title { font-family:'Noto Serif SC',serif; font-size:18px; color:rgba(255,255,255,.9); margin-bottom:4px; }
+.gift-summary-amount { font-size:32px; font-weight:600; color:#ffd700; font-family:'Noto Serif SC',serif; }
+.gift-summary-name { font-size:12px; color:rgba(255,255,255,.5); margin-top:4px; }
+.send-gift-btn {
+  background:linear-gradient(135deg,#f5c518,#c9a000);
+  color:#6b0000; border:none; padding:14px 32px;
+  font-size:15px; font-weight:600; font-family:'Noto Serif SC',serif;
+  cursor:pointer; border-radius:4px; transition:all .3s;
+  flex-shrink:0; box-shadow:0 4px 14px rgba(245,197,24,.4);
+}
+.send-gift-btn:hover { transform:scale(1.04); box-shadow:0 6px 20px rgba(245,197,24,.5); }
+
+/* gift history */
+.gift-history { margin-top:32px; }
+.history-title { font-family:'Noto Serif SC',serif; font-size:18px; color:var(--charcoal); margin-bottom:16px; }
+.gift-item { background:var(--cream); border-radius:4px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; transition:background .25s; }
+.gift-item:hover { background:white; }
+.gift-item-left { display:flex; align-items:center; gap:12px; }
+.gift-item-emoji { font-size:24px; }
+.gift-item-info {}
+.gift-item-sender { font-size:14px; font-weight:500; color:var(--charcoal); }
+.gift-item-name { font-size:11px; color:var(--muted); margin-top:2px; }
+.gift-item-right { text-align:right; }
+.gift-item-amount { font-family:'Noto Serif SC',serif; font-size:20px; color:var(--red); font-weight:600; }
+.gift-item-time { font-size:10px; color:var(--muted); margin-top:2px; }
+
+/* ════════════════════════════════════
+   MESSAGES PAGE
+════════════════════════════════════ */
+.messages-page { max-width:900px; margin:0 auto; padding:44px 28px; }
+
+.message-input-section { background:var(--cream); border-radius:6px; padding:26px 28px; margin-bottom:28px; }
+.msg-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.msg-form-full { grid-column:1/-1; }
+.mood-picker { display:flex; gap:8px; flex-wrap:wrap; }
+.mood-btn { background:white; border:1px solid rgba(201,169,110,.25); padding:7px 12px; font-size:16px; cursor:pointer; border-radius:20px; transition:all .2s; font-family:inherit; }
+.mood-btn:hover,.mood-btn.selected { background:var(--gold-light); border-color:var(--gold); transform:scale(1.1); }
+.char-count { font-size:11px; color:var(--muted); text-align:right; margin-top:4px; }
+.submit-msg-btn { background:var(--charcoal); color:white; padding:12px 28px; border:none; font-size:13px; font-family:inherit; cursor:pointer; border-radius:2px; transition:all .3s; }
+.submit-msg-btn:hover { background:var(--gold-dark); }
+
+/* filter tabs */
+.filter-tabs { display:flex; gap:4px; margin-bottom:20px; background:var(--cream); border-radius:4px; padding:4px; }
+.filter-tab { flex:1; padding:8px; font-size:12px; font-family:inherit; border:none; background:transparent; cursor:pointer; border-radius:3px; color:var(--muted); transition:all .25s; }
+.filter-tab.active { background:white; color:var(--charcoal); box-shadow:0 1px 4px rgba(44,38,32,.08); font-weight:500; }
+
+/* message wall */
+.messages-wall { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+.message-card {
+  background:white; border-radius:6px; padding:18px 20px;
+  border:1px solid rgba(201,169,110,.15); transition:all .3s;
+  position:relative; overflow:hidden;
+}
+.message-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--gold); }
+.message-card:hover { box-shadow:0 6px 20px rgba(44,38,32,.08); transform:translateY(-2px); }
+.message-card.from-family::before { background:var(--red); }
+.message-card.from-friend::before { background:#3498db; }
+.message-card.from-colleague::before { background:var(--green); }
+.msg-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.msg-sender-name { font-weight:500; font-size:14px; color:var(--charcoal); }
+.msg-relation { font-size:10px; color:var(--muted); margin-top:2px; }
+.msg-mood { font-size:20px; }
+.msg-text { font-size:13px; line-height:1.8; color:var(--charcoal); margin-bottom:10px; font-weight:300; }
+.msg-footer { display:flex; justify-content:space-between; align-items:center; }
+.msg-time { font-size:10px; color:var(--muted); }
+.msg-heart-btn { background:none; border:none; cursor:pointer; font-size:14px; padding:3px 6px; border-radius:10px; transition:all .2s; color:var(--muted); }
+.msg-heart-btn:hover,.msg-heart-btn.liked { color:var(--red); transform:scale(1.2); }
+.msg-heart-count { font-size:11px; color:var(--muted); }
+
+/* couple-view banner */
+.couple-view-banner {
+  background:linear-gradient(135deg,var(--charcoal),#3a2e28);
+  border-radius:6px; padding:18px 22px; margin-bottom:24px;
+  display:flex; align-items:center; gap:14px;
+  border:1px solid rgba(201,169,110,.2);
+}
+.couple-view-icon { font-size:32px; }
+.couple-view-text { flex:1; }
+.couple-view-title { font-family:'Noto Serif SC',serif; font-size:16px; color:var(--ivory); margin-bottom:3px; }
+.couple-view-sub { font-size:12px; color:rgba(250,247,242,.5); }
+.couple-view-btn { background:var(--gold-dark); color:white; border:none; padding:8px 18px; font-size:12px; font-family:inherit; cursor:pointer; border-radius:2px; transition:background .25s; white-space:nowrap; }
+.couple-view-btn:hover { background:#7a5c30; }
+
+/* stats bar */
+.msg-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:24px; }
+.msg-stat { background:var(--cream); border-radius:4px; padding:14px; text-align:center; }
+.msg-stat-val { font-family:'Noto Serif SC',serif; font-size:28px; font-weight:300; color:var(--charcoal); }
+.msg-stat-val.red { color:var(--red); }
+.msg-stat-val.gold { color:var(--gold-dark); }
+.msg-stat-label { font-size:10px; letter-spacing:1.5px; color:var(--muted); margin-top:4px; text-transform:uppercase; }
+
+/* ════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media(max-width:900px){
+  .hero { grid-template-columns:1fr; }
+  .hero-right { display:none; }
+  .features-grid { grid-template-columns:1fr 1fr; }
+  .stream-page { grid-template-columns:1fr; }
+  .packets-grid { grid-template-columns:repeat(2,1fr); }
+  .custom-grid { grid-template-columns:1fr; }
+  .messages-wall { grid-template-columns:1fr; }
+  .msg-stats { grid-template-columns:repeat(2,1fr); }
+  .msg-form-grid { grid-template-columns:1fr; }
+  .gift-summary { flex-direction:column; align-items:flex-start; }
+  .rehearsal-box { flex-direction:column; align-items:flex-start; }
+}
+@media(max-width:600px){
+  .nav { padding:0 14px; }
+  .nav-logo { font-size:16px; letter-spacing:2px; }
+  .nav-btn { padding:5px 9px; font-size:11px; }
+  .hero,.gift-page,.messages-page,.features-section { padding-left:14px; padding-right:14px; }
+  .stream-page { padding:12px 14px; }
+  .gold-divider { margin:0 14px; }
+  .packets-grid { grid-template-columns:1fr 1fr; gap:10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo" onclick="showPage('home')">囍 VOW</div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('home')">首页</button>
+    <button class="nav-btn" onclick="showPage('stream')">直播现场</button>
+    <button class="nav-btn" onclick="showPage('gift')">送礼物 🧧</button>
+    <button class="nav-btn" onclick="showPage('messages')">祝福留言 💌</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HOME
+══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div>
+      <div class="hero-tag">婚礼直播平台</div>
+      <h1 class="hero-title">你的誓言，<br/>让所有人<em>见证</em>。</h1>
+      <p class="hero-sub">为无法到场的亲友提供清晰、稳定的婚礼直播体验。送出心意，留下祝福，无论身在何处，都像亲临现场。</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('stream')">进入直播间</button>
+        <button class="btn-outline" onclick="showPage('gift')">送出心意 🧧</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="mock-phone">
+        <div class="phone-stream-area">
+          <div class="phone-glow"></div>
+          <div class="phone-live-badge"><div class="blink-dot"></div>直播中</div>
+          <div class="phone-viewer">👁 247 人观看</div>
+          <div class="phone-center-icon">💍</div>
+          <div class="phone-couple-info">
+            <div class="phone-couple-name">李婷 &amp; 王磊</div>
+            <div class="phone-couple-sub">6月14日 · 花园婚礼</div>
+          </div>
+          <div class="phone-floating">
+            <div class="float-emoji">❤️</div>
+            <div class="float-emoji">🧧</div>
+            <div class="float-emoji">💐</div>
+          </div>
+        </div>
+        <div class="phone-bottom-bar">
+          <div class="phone-input-mock">送上祝福...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gold-divider"></div>
+
+  <div class="features-section">
+    <div class="section-header">
+      <div class="section-tag-c">核心功能</div>
+      <div class="section-title">为<em>最重要的一天</em>而生</div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-title">稳定直播 + 主题装饰</div>
+        <div class="feature-desc">自适应画质，彩排备份，以及多种可切换的直播间装饰主题，让远端宾客身临其境。</div>
+        <div class="feature-badge">实时直播</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-title">线上送礼 · 还情红包</div>
+        <div class="feature-desc">精选吉利金额红包，名字有趣又应景。支持自定义数额和专属祝福语，完美延续中国"还情"文化。</div>
+        <div class="feature-badge">创意功能 ✦</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-title">祝福留言墙</div>
+        <div class="feature-desc">宾客留下文字和表情祝福，新人婚后可以慢慢回看每一条心意，温暖一生珍藏。</div>
+        <div class="feature-badge">永久留存</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-title">私密邀请</div>
+        <div class="feature-desc">专属链接分享，无需下载 App，宾客直接在手机浏览器点开即可——老人小孩都能用。</div>
+        <div class="feature-badge">零门槛</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-title">实时互动</div>
+        <div class="feature-desc">发送表情、聊天祝福，直播间实时展示宾客互动，像真的坐在座位上一样热闹。</div>
+        <div class="feature-badge">实时互动</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-title">高清存档</div>
+        <div class="feature-desc">婚礼全程自动保存高清回放，新人可随时重温，也可下载或分享给全家珍藏。</div>
+        <div class="feature-badge">永久保存</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LIVE STREAM
+══════════════════════════════════════ -->
+<div id="page-stream" class="page">
+  <div id="stream-wrapper" class="theme-default">
+    <div class="stream-page">
+      <div class="stream-main">
+
+        <!-- Theme Picker -->
+        <div class="theme-picker">
+          <div class="theme-picker-title">🎨 直播间主题装饰</div>
+          <div class="theme-options">
+            <div class="theme-opt selected" onclick="setTheme('default',this)">
+              <div class="theme-dot" style="background:#2c2620"></div>深夜默片
+            </div>
+            <div class="theme-opt" onclick="setTheme('chinese',this)">
+              <div class="theme-dot" style="background:#8b1a1a"></div>🏮 中式红喜
+            </div>
+            <div class="theme-opt" onclick="setTheme('pink',this)">
+              <div class="theme-dot" style="background:#e8b4b8"></div>🌸 粉色浪漫
+            </div>
+            <div class="theme-opt" onclick="setTheme('gold',this)">
+              <div class="theme-dot" style="background:#c9a96e"></div>✦ 金色典雅
+            </div>
+            <div class="theme-opt" onclick="setTheme('white',this)">
+              <div class="theme-dot" style="background:#e8e0d8;border:1px solid #ccc"></div>🤍 白色简约
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera permission notice -->
+        <div id="cam-notice" style="background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.35);border-radius:4px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--charcoal);margin-bottom:0;">
+          <span style="font-size:18px">📷</span>
+          <span>点击「开始直播」后，浏览器会弹出摄像头授权请求，请点击<b>「允许」</b>即可接入你的摄像头。</span>
+        </div>
+
+        <!-- Video -->
+        <div class="stream-video-box" id="stream-video-box">
+          <!-- Real camera feed -->
+          <video id="camera-video" autoplay playsinline muted
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:1;border-radius:6px;transform:scaleX(-1);">
+          </video>
+
+          <!-- Overlay decorations on top of video (theme-specific) -->
+          <div id="theme-overlay" style="position:absolute;inset:0;pointer-events:none;z-index:2;"></div>
+
+          <!-- Waiting screen (shown before camera starts) -->
+          <div class="stream-waiting" id="stream-waiting" style="position:relative;z-index:3;">
+            <div class="stream-waiting-icon">💍</div>
+            <div class="stream-waiting-text">等待典礼开始</div>
+            <div class="stream-waiting-sub" id="countdown-text">点击「开始直播」接入摄像头</div>
+          </div>
+
+          <!-- LIVE badge on top of video -->
+          <div id="live-badge-overlay" style="display:none;position:absolute;top:14px;left:14px;z-index:4;background:var(--red);color:white;font-size:10px;padding:4px 10px;border-radius:2px;display:none;align-items:center;gap:5px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:white;animation:blink 1.2s infinite;"></div>直播中
+          </div>
+
+          <!-- Couple name overlay -->
+          <div id="couple-overlay" style="display:none;position:absolute;bottom:56px;left:14px;z-index:4;background:rgba(0,0,0,0.45);backdrop-filter:blur(4px);padding:8px 14px;border-radius:3px;">
+            <div style="font-family:'Noto Serif SC',serif;font-size:15px;color:white;font-style:italic;">李婷 &amp; 王磊</div>
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--gold-light);margin-top:2px;">6月14日 · 花园婚礼</div>
+          </div>
+
+          <!-- Viewer count overlay -->
+          <div id="viewer-overlay" style="display:none;position:absolute;top:14px;right:14px;z-index:4;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);padding:4px 10px;border-radius:2px;font-size:11px;color:rgba(255,255,255,0.8);">
+            👁 247 人观看
+          </div>
+
+          <!-- Error message -->
+          <div id="cam-error" style="display:none;position:relative;z-index:3;text-align:center;padding:20px;">
+            <div style="font-size:40px;margin-bottom:10px;">📵</div>
+            <div style="font-family:'Noto Serif SC',serif;font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:6px;">无法访问摄像头</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.7;" id="cam-error-msg">请检查浏览器权限设置</div>
+          </div>
+
+          <div class="stream-bar">
+            <button class="ctrl-btn" id="mute-btn" onclick="toggleMute()" title="麦克风">🎙️</button>
+            <button class="ctrl-btn" id="cam-btn" onclick="toggleCamera()" title="摄像头">📷</button>
+            <button class="ctrl-btn" onclick="toggleFullscreen()" title="全屏">⛶</button>
+            <button class="ctrl-btn" id="mirror-btn" onclick="toggleMirror()" title="镜像翻转" style="font-size:11px;width:auto;border-radius:3px;padding:0 10px;">镜像</button>
+            <div class="live-indicator" id="live-ind" style="display:none"><div class="dot"></div><span>直播中</span></div>
+            <button class="ctrl-btn go-live-btn" id="go-live-btn" onclick="toggleLive()">● 开始直播</button>
+          </div>
+        </div>
+
+        <!-- Rehearsal backup -->
+        <div class="rehearsal-box">
+          <div>
+            <div class="rehearsal-title">彩排备份已就绪</div>
+            <div class="rehearsal-desc">昨日彩排录像已保存。若直播出现中断，可无缝切换至备用视频，确保宾客不错过任何关键时刻。</div>
+          </div>
+          <div class="rehearsal-status"><div class="status-dot-green"></div>备用就绪 · 01:24:07</div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="stream-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">直播祝福 💬</div>
+          <div class="chat-msgs" id="chat-msgs">
+            <div class="chat-msg-item"><strong>阿姨（东京）</strong> 隔着屏幕感动落泪 🥺</div>
+            <div class="chat-msg-item"><strong>王家全体</strong> 恨不得飞过来 🥂</div>
+            <div class="chat-msg-item gift-msg"><strong>🧧 舅舅</strong> 送出「百年好合」· ¥999</div>
+            <div class="chat-msg-item"><strong>爷爷</strong> 为你们感到骄傲 💕</div>
+            <div class="chat-msg-item gift-msg"><strong>🧧 同学群</strong> 送出「早生贵子」· ¥188</div>
+          </div>
+          <div class="chat-input-row">
+            <input class="chat-input" id="chat-input" placeholder="送上你的祝福..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+            <button class="chat-send" onclick="sendMsg()">发送</button>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">发送表情 ✨</div>
+          <div class="reactions-grid">
+            <button class="reaction-btn" onclick="sendReaction('❤️',event)">❤️</button>
+            <button class="reaction-btn" onclick="sendReaction('🧧',event)">🧧</button>
+            <button class="reaction-btn" onclick="sendReaction('💐',event)">💐</button>
+            <button class="reaction-btn" onclick="sendReaction('😭',event)">😭</button>
+            <button class="reaction-btn" onclick="sendReaction('🎉',event)">🎉</button>
+            <button class="reaction-btn" onclick="sendReaction('💍',event)">💍</button>
+            <button class="reaction-btn" onclick="sendReaction('🥂',event)">🥂</button>
+            <button class="reaction-btn" onclick="sendReaction('✨',event)">✨</button>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">247 人正在观看</div>
+          <div class="viewers-list">🇨🇳 北京 · 🇨🇳 上海 · 🇨🇳 广州<br/>🇺🇸 纽约 · 🇯🇵 东京 · 🇬🇧 伦敦<br/>🇦🇺 悉尼 · 🇸🇬 新加坡</div>
+          <div class="viewers-more">+ 来自 10 个国家和地区</div>
+        </div>
+
+        <button class="btn-red" style="width:100%" onclick="showPage('gift')">🧧 送出礼物红包</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     GIFT / RED PACKET
+══════════════════════════════════════ -->
+<div id="page-gift" class="page">
+  <div class="gift-page">
+    <div class="page-title">送出你的<em>心意</em></div>
+    <p class="page-sub">选择吉利红包，或自定义金额与祝福语。金额将记录在礼账本中，新人可在婚后回看每一份心意。</p>
+
+    <!-- Preset packets -->
+    <div class="packets-grid" id="packets-grid">
+      <!-- generated by JS -->
+    </div>
+
+    <!-- Custom -->
+    <div class="custom-section">
+      <div class="custom-title">自定义红包</div>
+      <div class="custom-grid">
+        <div class="form-group">
+          <label class="form-label">你的姓名</label>
+          <input class="form-input" id="gift-sender" placeholder="例：张伟叔叔"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">自定义金额（元）</label>
+          <input class="form-input" type="number" id="gift-custom-amount" placeholder="例：520" min="0.99" max="99999"/>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">专属祝福语</label>
+          <input class="form-input" id="gift-blessing" placeholder="例：愿你们相守一生，岁岁平安"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="gift-summary" id="gift-summary">
+      <div class="gift-summary-left">
+        <div class="gift-summary-title" id="summary-packet-name">请选择一个红包 👆</div>
+        <div class="gift-summary-amount" id="summary-amount">— <span>元</span></div>
+        <div class="gift-summary-name" id="summary-blessing">选择预设红包或填写自定义金额</div>
+      </div>
+      <button class="send-gift-btn" onclick="sendGift()">🧧 送出红包</button>
+    </div>
+
+    <!-- Gift history -->
+    <div class="gift-history">
+      <div class="history-title">今日礼账 · 共收到 <span id="gift-total" style="color:var(--red)">¥3,588</span></div>
+      <div id="gift-list">
+        <div class="gift-item">
+          <div class="gift-item-left"><div class="gift-item-emoji">🧧</div><div class="gift-item-info"><div class="gift-item-sender">舅舅一家</div><div class="gift-item-name">百年好合</div></div></div>
+          <div class="gift-item-right"><div class="gift-item-amount">¥999</div><div class="gift-item-time">14:32</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-item-left"><div class="gift-item-emoji">🎊</div><div class="gift-item-info"><div class="gift-item-sender">大学同学群</div><div class="gift-item-name">早生贵子</div></div></div>
+          <div class="gift-item-right"><div class="gift-item-amount">¥188</div><div class="gift-item-time">14:28</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-item-left"><div class="gift-item-emoji">💕</div><div class="gift-item-info"><div class="gift-item-sender">姑姑（悉尼）</div><div class="gift-item-name">花好月圆</div></div></div>
+          <div class="gift-item-right"><div class="gift-item-amount">¥520</div><div class="gift-item-time">14:15</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-item-left"><div class="gift-item-emoji">🌸</div><div class="gift-item-info"><div class="gift-item-sender">前同事小李</div><div class="gift-item-name">金玉满堂</div></div></div>
+          <div class="gift-item-right"><div class="gift-item-amount">¥188</div><div class="gift-item-time">14:09</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-item-left"><div class="gift-item-emoji">🍀</div><div class="gift-item-info"><div class="gift-item-sender">表哥（纽约）</div><div class="gift-item-name">幸福美满</div></div></div>
+          <div class="gift-item-right"><div class="gift-item-amount">¥666</div><div class="gift-item-time">13:58</div></div>
+        </div>
+        <div class="gift-item">
+          <div class="gift-item-left"><div class="gift-item-emoji">💎</div><div class="gift-item-info"><div class="gift-item-sender">闺蜜团</div><div class="gift-item-name">白头偕老</div></div></div>
+          <div class="gift-item-right"><div class="gift-item-amount">¥1,027</div><div class="gift-item-time">13:44</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MESSAGES
+══════════════════════════════════════ -->
+<div id="page-messages" class="page">
+  <div class="messages-page">
+    <div class="page-title">婚礼<em>祝福留言</em></div>
+    <p class="page-sub">亲爱的宾客，请留下你对新人最真诚的祝福。婚礼结束后，他们会亲自回来细细品读每一条心意。</p>
+
+    <!-- Couple view banner -->
+    <div class="couple-view-banner">
+      <div class="couple-view-icon">👫</div>
+      <div class="couple-view-text">
+        <div class="couple-view-title">新人专属回看模式</div>
+        <div class="couple-view-sub">婚礼结束后，点击这里以新人身份慢慢回味每一条祝福</div>
+      </div>
+      <button class="couple-view-btn" onclick="toggleCoupleView()">进入回看模式</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="msg-stats">
+      <div class="msg-stat"><div class="msg-stat-val" id="stat-total">24</div><div class="msg-stat-label">条祝福</div></div>
+      <div class="msg-stat"><div class="msg-stat-val red" id="stat-hearts">186</div><div class="msg-stat-label">个心意</div></div>
+      <div class="msg-stat"><div class="msg-stat-val gold" id="stat-countries">8</div><div class="msg-stat-label">个城市</div></div>
+      <div class="msg-stat"><div class="msg-stat-val" id="stat-family">12</div><div class="msg-stat-label">位家人</div></div>
+    </div>
+
+    <!-- Write message -->
+    <div class="message-input-section" id="write-section">
+      <div class="custom-title" style="margin-bottom:16px">✍️ 写下你的祝福</div>
+      <div class="msg-form-grid">
+        <div class="form-group">
+          <label class="form-label">你的名字</label>
+          <input class="form-input" id="msg-sender" placeholder="例：表姐一家"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">你与新人的关系</label>
+          <select class="form-input" id="msg-relation">
+            <option value="family">👨‍👩‍👧 家人</option>
+            <option value="friend">👯 朋友</option>
+            <option value="colleague">💼 同事/同学</option>
+            <option value="other">🌟 其他</option>
+          </select>
+        </div>
+        <div class="form-group msg-form-full">
+          <label class="form-label">祝福语</label>
+          <textarea class="form-textarea" id="msg-text" placeholder="写下最真诚的祝福，新人将在婚后亲自回读每一条..." maxlength="200" oninput="updateCharCount()"></textarea>
+          <div class="char-count"><span id="char-count">0</span>/200</div>
+        </div>
+        <div class="form-group msg-form-full">
+          <label class="form-label">心情 / 表情</label>
+          <div class="mood-picker" id="mood-picker">
+            <button class="mood-btn selected" onclick="selectMood(this,'❤️')">❤️</button>
+            <button class="mood-btn" onclick="selectMood(this,'😭')">😭</button>
+            <button class="mood-btn" onclick="selectMood(this,'🥂')">🥂</button>
+            <button class="mood-btn" onclick="selectMood(this,'🌸')">🌸</button>
+            <button class="mood-btn" onclick="selectMood(this,'🎉')">🎉</button>
+            <button class="mood-btn" onclick="selectMood(this,'💍')">💍</button>
+            <button class="mood-btn" onclick="selectMood(this,'🙏')">🙏</button>
+            <button class="mood-btn" onclick="selectMood(this,'💕')">💕</button>
+          </div>
+        </div>
+      </div>
+      <button class="submit-msg-btn" style="margin-top:14px" onclick="submitMessage()">送出祝福 💌</button>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterMsgs('all',this)">全部祝福</button>
+      <button class="filter-tab" onclick="filterMsgs('family',this)">👨‍👩‍👧 家人</button>
+      <button class="filter-tab" onclick="filterMsgs('friend',this)">👯 朋友</button>
+      <button class="filter-tab" onclick="filterMsgs('colleague',this)">💼 同事/同学</button>
+    </div>
+
+    <!-- Message wall -->
+    <div class="messages-wall" id="messages-wall">
+      <!-- generated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ── PAGE NAV ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const map = ['home','stream','gift','messages'];
+  document.querySelectorAll('.nav-btn')[map.indexOf(id)].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── THEME ──
+const THEME_OVERLAYS = {
+  default: '',
+  chinese: '<div style="position:absolute;top:0;left:0;right:0;padding:10px;text-align:center;font-size:26px;letter-spacing:14px;opacity:0.6;text-shadow:0 0 12px rgba(255,200,0,0.5)">🏮🧧🏮</div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-8deg);font-size:160px;color:rgba(255,215,0,0.07);font-family:serif;pointer-events:none">囍</div>',
+  pink: '<div style="position:absolute;top:0;left:0;right:0;padding:8px;text-align:center;font-size:22px;letter-spacing:18px;opacity:0.75">🌸💗🌸</div><div style="position:absolute;bottom:60px;right:12px;font-size:22px;opacity:0.5;line-height:1.8">🌸<br>💕<br>🌸</div>',
+  gold: '<div style="position:absolute;top:10px;right:14px;font-size:22px;color:rgba(201,169,110,0.55);text-shadow:0 0 8px rgba(201,169,110,0.4)">✦</div><div style="position:absolute;bottom:60px;left:10px;font-size:18px;color:rgba(201,169,110,0.4)">✦</div>',
+  white: '<div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:28px;opacity:0.55">💒</div>'
+};
+
+function setTheme(name, btn) {
+  const w = document.getElementById('stream-wrapper');
+  w.className = 'theme-' + name;
+  document.querySelectorAll('.theme-opt').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  const overlay = document.getElementById('theme-overlay');
+  if (overlay) overlay.innerHTML = THEME_OVERLAYS[name] || '';
+}
+
+// ── STREAM / CAMERA ──
+let isLive = false;
+let micMuted = false;
+let camOff = false;
+let mirrored = true;
+let mediaStream = null;
+
+async function toggleLive() {
+  if (!isLive) {
+    await startCamera();
+  } else {
+    stopCamera();
+  }
+}
+
+async function startCamera() {
+  const btn = document.getElementById('go-live-btn');
+  btn.textContent = '⏳ 连接中...';
+  btn.disabled = true;
+
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+      audio: true
+    });
+
+    const video = document.getElementById('camera-video');
+    video.srcObject = mediaStream;
+    video.style.display = 'block';
+
+    // Hide waiting screen, show live overlays
+    document.getElementById('stream-waiting').style.display = 'none';
+    document.getElementById('cam-error').style.display = 'none';
+    document.getElementById('cam-notice').style.display = 'none';
+    document.getElementById('live-badge-overlay').style.display = 'flex';
+    document.getElementById('couple-overlay').style.display = 'block';
+    document.getElementById('viewer-overlay').style.display = 'block';
+    document.getElementById('live-ind').style.display = 'flex';
+
+    btn.textContent = '■ 结束直播';
+    btn.style.background = '#555';
+    btn.style.borderColor = '#555';
+    btn.disabled = false;
+    isLive = true;
+
+    // Apply mic mute state
+    mediaStream.getAudioTracks().forEach(t => t.enabled = !micMuted);
+
+  } catch (err) {
+    btn.textContent = '● 开始直播';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    btn.disabled = false;
+
+    document.getElementById('stream-waiting').style.display = 'none';
+    document.getElementById('cam-error').style.display = 'block';
+
+    let msg = '请检查浏览器权限设置，然后刷新页面重试。';
+    if (err.name === 'NotAllowedError') {
+      msg = '你拒绝了摄像头权限。<br/>请点击浏览器地址栏左侧的🔒图标 → 将摄像头和麦克风改为「允许」，然后刷新页面。';
+    } else if (err.name === 'NotFoundError') {
+      msg = '未检测到摄像头设备，请确认摄像头已正确连接。';
+    } else if (err.name === 'NotReadableError') {
+      msg = '摄像头正被其他程序占用（如微信、腾讯会议），请先关闭它们再试。';
+    }
+    document.getElementById('cam-error-msg').innerHTML = msg;
+  }
+}
+
+function stopCamera() {
+  if (mediaStream) {
+    mediaStream.getTracks().forEach(t => t.stop());
+    mediaStream = null;
+  }
+  const video = document.getElementById('camera-video');
+  video.srcObject = null;
+  video.style.display = 'none';
+
+  document.getElementById('stream-waiting').style.display = 'block';
+  document.getElementById('stream-waiting').innerHTML = '<div class="stream-waiting-icon">✅</div><div class="stream-waiting-text">直播已结束</div><div class="stream-waiting-sub">回放视频处理中...</div>';
+  document.getElementById('live-badge-overlay').style.display = 'none';
+  document.getElementById('couple-overlay').style.display = 'none';
+  document.getElementById('viewer-overlay').style.display = 'none';
+  document.getElementById('live-ind').style.display = 'none';
+
+  const btn = document.getElementById('go-live-btn');
+  btn.textContent = '● 开始直播';
+  btn.style.background = '';
+  btn.style.borderColor = '';
+  isLive = false;
+}
+
+function toggleMute() {
+  micMuted = !micMuted;
+  document.getElementById('mute-btn').textContent = micMuted ? '🔇' : '🎙️';
+  document.getElementById('mute-btn').style.background = micMuted ? 'rgba(192,57,43,0.5)' : '';
+  if (mediaStream) {
+    mediaStream.getAudioTracks().forEach(t => t.enabled = !micMuted);
+  }
+}
+
+function toggleCamera() {
+  camOff = !camOff;
+  const video = document.getElementById('camera-video');
+  const btn = document.getElementById('cam-btn');
+  if (mediaStream) {
+    mediaStream.getVideoTracks().forEach(t => t.enabled = !camOff);
+  }
+  video.style.opacity = camOff ? '0' : '1';
+  btn.textContent = camOff ? '🚫' : '📷';
+  btn.style.background = camOff ? 'rgba(192,57,43,0.5)' : '';
+}
+
+function toggleMirror() {
+  mirrored = !mirrored;
+  const video = document.getElementById('camera-video');
+  video.style.transform = mirrored ? 'scaleX(-1)' : 'scaleX(1)';
+  document.getElementById('mirror-btn').style.background = mirrored ? 'rgba(201,169,110,0.3)' : '';
+}
+
+function toggleFullscreen() {
+  const box = document.getElementById('stream-video-box');
+  if (!document.fullscreenElement) {
+    box.requestFullscreen().catch(() => alert('全屏请求被拒绝，请检查浏览器设置'));
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+function sendMsg(){
+  const inp=document.getElementById('chat-input');
+  const t=inp.value.trim(); if(!t)return;
+  const msgs=document.getElementById('chat-msgs');
+  const d=document.createElement('div'); d.className='chat-msg-item';
+  d.innerHTML='<strong>我</strong> '+t;
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; inp.value='';
+}
+function sendReaction(emoji,e){
+  const btn=e.target; btn.style.transform='scale(1.4)'; setTimeout(()=>btn.style.transform='',300);
+  const el=document.createElement('div'); el.textContent=emoji; el.className='float-reaction';
+  const r=btn.getBoundingClientRect(); el.style.left=r.left+'px'; el.style.top=r.top+'px';
+  document.body.appendChild(el); setTimeout(()=>el.remove(),1700);
+}
+
+// ── GIFT ──
+const PACKETS=[
+  {emoji:'🧧',name:'百年好合',amount:999,blessing:'愿你们相守百年，合和美满'},
+  {emoji:'💎',name:'白头偕老',amount:666,blessing:'愿你们恩恩爱爱，白头偕老'},
+  {emoji:'🍀',name:'幸福美满',amount:520,blessing:'520，我爱你，永远幸福'},
+  {emoji:'🌸',name:'花好月圆',amount:388,blessing:'花好月圆人团圆，岁岁平安'},
+  {emoji:'🎊',name:'早生贵子',amount:288,blessing:'早生贵子，阖家欢乐'},
+  {emoji:'💕',name:'金玉满堂',amount:188,blessing:'金玉满堂，福运绵长'},
+  {emoji:'🌟',name:'喜结良缘',amount:99.9,blessing:'天作之合，喜结良缘'},
+  {emoji:'🎁',name:'心想事成',amount:66.6,blessing:'心想事成，万事如意'},
+];
+
+let selectedPacket=null;
+let giftTotal=3588;
+
+function renderPackets(){
+  const grid=document.getElementById('packets-grid');
+  grid.innerHTML=PACKETS.map((p,i)=>`
+    <div class="packet-card" id="packet-${i}" onclick="selectPacket(${i})">
+      <div class="packet-emoji">${p.emoji}</div>
+      <div class="packet-name">${p.name}</div>
+      <div class="packet-amount">${p.amount%1===0?p.amount:p.amount.toFixed(1)} <span>元</span></div>
+      <div class="packet-blessing">${p.blessing}</div>
+    </div>`).join('');
+}
+
+function selectPacket(i){
+  selectedPacket=i;
+  document.querySelectorAll('.packet-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('packet-'+i).classList.add('selected');
+  const p=PACKETS[i];
+  document.getElementById('summary-packet-name').textContent=p.emoji+' '+p.name;
+  document.getElementById('summary-amount').innerHTML=(p.amount%1===0?p.amount:p.amount.toFixed(1))+' <span>元</span>';
+  document.getElementById('summary-blessing').textContent=p.blessing;
+  document.getElementById('gift-custom-amount').value='';
+}
+
+function sendGift(){
+  const sender=document.getElementById('gift-sender').value.trim();
+  const customAmt=parseFloat(document.getElementById('gift-custom-amount').value);
+  const customBlessing=document.getElementById('gift-blessing').value.trim();
+
+  let name,amount,blessing,emoji;
+  if(customAmt&&customAmt>0){
+    amount=customAmt; name='自定义红包'; blessing=customBlessing||'祝新婚快乐！'; emoji='🎁';
+  } else if(selectedPacket!==null){
+    const p=PACKETS[selectedPacket]; amount=p.amount; name=p.name; blessing=p.blessing; emoji=p.emoji;
+  } else { alert('请选择一个红包，或填写自定义金额 🧧'); return; }
+
+  const senderName=sender||'匿名宾客';
+  const now=new Date(); const time=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  const displayAmt=amount%1===0?amount:amount.toFixed(1);
+  giftTotal+=amount;
+
+  const list=document.getElementById('gift-list');
+  const item=document.createElement('div'); item.className='gift-item';
+  item.innerHTML=`
+    <div class="gift-item-left">
+      <div class="gift-item-emoji">${emoji}</div>
+      <div class="gift-item-info">
+        <div class="gift-item-sender">${senderName}</div>
+        <div class="gift-item-name">${name} · ${blessing}</div>
+      </div>
+    </div>
+    <div class="gift-item-right">
+      <div class="gift-item-amount">¥${displayAmt}</div>
+      <div class="gift-item-time">${time}</div>
+    </div>`;
+  list.prepend(item);
+
+  document.getElementById('gift-total').textContent='¥'+giftTotal.toLocaleString();
+
+  // notify in chat
+  const msgs=document.getElementById('chat-msgs');
+  const msg=document.createElement('div'); msg.className='chat-msg-item gift-msg';
+  msg.innerHTML=`<strong>🧧 ${senderName}</strong> 送出「${name}」· ¥${displayAmt}`;
+  msgs.appendChild(msg); msgs.scrollTop=msgs.scrollHeight;
+
+  // reset
+  selectedPacket=null;
+  document.querySelectorAll('.packet-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('summary-packet-name').textContent='红包已送出 🎉';
+  document.getElementById('summary-amount').innerHTML=displayAmt+' <span>元</span>';
+  document.getElementById('summary-blessing').textContent=blessing;
+  document.getElementById('gift-sender').value='';
+  document.getElementById('gift-custom-amount').value='';
+  document.getElementById('gift-blessing').value='';
+  alert('🧧 红包送出成功！\n\n'+name+' · ¥'+displayAmt+'\n"'+blessing+'"');
+}
+
+// ── MESSAGES ──
+let selectedMood='❤️';
+let currentFilter='all';
+
+const INIT_MESSAGES=[
+  {sender:'舅妈一家',relation:'family',text:'看着你从小长大，今天看到你穿上婚纱，舅妈真的哭了。愿你和磊磊相亲相爱，幸福一辈子！',mood:'😭',hearts:12,time:'14:35',id:1},
+  {sender:'大学室友四人组',relation:'friend',text:'四年一起睡上下铺，你终于嫁出去了！哈哈哈哈，祝你们新婚快乐，有空回来喝你的喜酒！',mood:'🎉',hearts:24,time:'14:28',id:2},
+  {sender:'前同事小王',relation:'colleague',text:'当初在公司看你们相识，没想到真的走到了今天。祝你们越来越好，工作顺利，感情甜蜜！',mood:'🥂',hearts:8,time:'14:22',id:3},
+  {sender:'外婆（通过女儿代发）',relation:'family',text:'外婆年纪大了来不了，心里一直想着你。婷婷，要好好照顾自己，找到好人了就要好好珍惜。',mood:'❤️',hearts:31,time:'14:15',id:4},
+  {sender:'高中死党',relation:'friend',text:'我们认识多少年了！你终于成新娘了，我骄傲！下次见面请我吃你的满月酒哦哈哈！',mood:'🌸',hearts:19,time:'14:08',id:5},
+  {sender:'领导和同事们',relation:'colleague',text:'恭喜李婷，你是我们部门最先成家的！工作认真，生活幸福，我们都为你高兴。新婚快乐！',mood:'🙏',hearts:6,time:'13:55',id:6},
+];
+
+let messages=[...INIT_MESSAGES];
+let likedIds=new Set();
+
+function renderMessages(){
+  const wall=document.getElementById('messages-wall');
+  const filtered=currentFilter==='all'?messages:messages.filter(m=>m.relation===currentFilter);
+  wall.innerHTML=filtered.map(m=>`
+    <div class="message-card from-${m.relation}" id="msg-card-${m.id}">
+      <div class="msg-header">
+        <div>
+          <div class="msg-sender-name">${m.sender}</div>
+          <div class="msg-relation">${relationLabel(m.relation)}</div>
+        </div>
+        <div class="msg-mood">${m.mood}</div>
+      </div>
+      <div class="msg-text">${m.text}</div>
+      <div class="msg-footer">
+        <div class="msg-time">${m.time}</div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <button class="msg-heart-btn ${likedIds.has(m.id)?'liked':''}" onclick="toggleHeart(${m.id})">♥</button>
+          <span class="msg-heart-count" id="hearts-${m.id}">${m.hearts}</span>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('stat-total').textContent=messages.length;
+  document.getElementById('stat-hearts').textContent=messages.reduce((s,m)=>s+m.hearts,0);
+  document.getElementById('stat-family').textContent=messages.filter(m=>m.relation==='family').length;
+}
+
+function relationLabel(r){
+  return {family:'👨‍👩‍👧 家人',friend:'👯 朋友',colleague:'💼 同事/同学',other:'🌟 其他'}[r]||r;
+}
+
+function toggleHeart(id){
+  const m=messages.find(m=>m.id===id); if(!m)return;
+  if(likedIds.has(id)){likedIds.delete(id);m.hearts--;} else {likedIds.add(id);m.hearts++;}
+  renderMessages();
+}
+
+function filterMsgs(type,btn){
+  currentFilter=type;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderMessages();
+}
+
+function selectMood(btn,emoji){
+  selectedMood=emoji;
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function updateCharCount(){
+  const t=document.getElementById('msg-text').value;
+  document.getElementById('char-count').textContent=t.length;
+}
+
+function submitMessage(){
+  const sender=document.getElementById('msg-sender').value.trim();
+  const text=document.getElementById('msg-text').value.trim();
+  const relation=document.getElementById('msg-relation').value;
+  if(!sender){alert('请填写你的名字 😊');return;}
+  if(!text||text.length<5){alert('请写下至少5个字的祝福 💌');return;}
+  const now=new Date();
+  const time=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  const newMsg={sender,relation,text,mood:selectedMood,hearts:0,time,id:Date.now()};
+  messages.unshift(newMsg);
+  renderMessages();
+  document.getElementById('msg-sender').value='';
+  document.getElementById('msg-text').value='';
+  document.getElementById('char-count').textContent='0';
+  document.getElementById('msg-blessing').value='';
+  selectedMood='❤️';
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelector('.mood-btn').classList.add('selected');
+  alert('💌 祝福已送达！\n新人会在婚礼结束后亲自回来阅读你的心意。');
+}
+
+let coupleViewMode=false;
+function toggleCoupleView(){
+  coupleViewMode=!coupleViewMode;
+  const btn=document.querySelector('.couple-view-btn');
+  const writeSection=document.getElementById('write-section');
+  if(coupleViewMode){
+    btn.textContent='退出回看模式';
+    btn.style.background='#c0392b';
+    writeSection.style.display='none';
+    document.querySelector('.couple-view-title').textContent='💑 新人回看模式 — 婚后专属时光';
+    document.querySelector('.couple-view-sub').textContent='正在以新人身份浏览所有祝福，感受每一份心意 ❤️';
+  } else {
+    btn.textContent='进入回看模式';
+    btn.style.background='';
+    writeSection.style.display='block';
+    document.querySelector('.couple-view-title').textContent='新人专属回看模式';
+    document.querySelector('.couple-view-sub').textContent='婚礼结束后，点击这里以新人身份慢慢回味每一条祝福';
+  }
+}
+
+// ── INIT ──
+renderPackets();
+renderMessages();
+</script>
+</body>
+</html>
